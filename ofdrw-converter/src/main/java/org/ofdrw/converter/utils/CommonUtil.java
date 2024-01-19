@@ -1,6 +1,6 @@
 package org.ofdrw.converter.utils;
 
-import com.itextpdf.kernel.colors.DeviceRgb;
+
 import org.apache.pdfbox.jbig2.JBIG2ImageReader;
 import org.apache.pdfbox.jbig2.JBIG2ImageReaderSpi;
 import org.apache.pdfbox.jbig2.io.DefaultInputStreamFactory;
@@ -12,8 +12,6 @@ import org.ofdrw.core.basicStructure.doc.CT_PageArea;
 import org.ofdrw.core.basicStructure.pageObj.layer.block.ImageObject;
 import org.ofdrw.core.basicType.ST_Array;
 import org.ofdrw.core.basicType.ST_Box;
-import org.ofdrw.core.pageDescription.color.color.CT_Color;
-import org.ofdrw.reader.ResourceManage;
 import org.ujmp.core.Matrix;
 
 import javax.imageio.ImageIO;
@@ -220,39 +218,39 @@ public class CommonUtil {
         return time.length() > var1 && time.charAt(var1) >= 48 && time.charAt(var1) <= 57;
     }
 
-    public static org.ujmp.core.Matrix getImageMatrixFromOfd(ImageObject nImageObject, ST_Box pageBox, ST_Array compositeObjectCTM) {
-        org.ujmp.core.Matrix matrix = MatrixUtils.base();
-        matrix = MatrixUtils.imageMatrix(matrix, 0, 1, 0);
-        matrix = MatrixUtils.move(matrix, 0, 1);
-        if (nImageObject.getCTM() != null) {
-            Matrix ctm = MatrixUtils.base();
-            ctm = ctm.mtimes(MatrixUtils.ctm(nImageObject.getCTM().toDouble()));
-            matrix = matrix.mtimes(ctm);
-        }
-
-        ST_Box boundary = nImageObject.getBoundary();
-        double x = boundary.getTopLeftX();
-        double y = boundary.getTopLeftY();
-        if (boundary == null) {
-            boundary = pageBox;
-        }
-        if (compositeObjectCTM != null) {
-            Matrix ctm = MatrixUtils.base();
-            ctm = ctm.mtimes(MatrixUtils.ctm(compositeObjectCTM.toDouble()));
-            matrix = matrix.mtimes(ctm);
-            double[] realPos = PointUtil.ctmCalPoint(x, y, compositeObjectCTM.toDouble());
-            x = realPos[0];
-            y = realPos[1];
-        }
-
-        matrix = matrix.mtimes(MatrixUtils.create(1, 0, 0, 1, x, y));
-
-        matrix = MatrixUtils.imageMatrix(matrix, 0, 1, 0);
-        matrix = matrix.mtimes(MatrixUtils.create(1, 0, 0, 1, 0, pageBox.getHeight()));
-
-        matrix = matrix.mtimes(MatrixUtils.create(converterDpi(1), 0, 0, converterDpi(1), 0, 0));
-        return matrix;
-    }
+//    public static org.ujmp.core.Matrix getImageMatrixFromOfd(ImageObject nImageObject, ST_Box pageBox, ST_Array compositeObjectCTM) {
+//        org.ujmp.core.Matrix matrix = MatrixUtils.base();
+//        matrix = MatrixUtils.imageMatrix(matrix, 0, 1, 0);
+//        matrix = MatrixUtils.move(matrix, 0, 1);
+//        if (nImageObject.getCTM() != null) {
+//            Matrix ctm = MatrixUtils.base();
+//            ctm = ctm.mtimes(MatrixUtils.ctm(nImageObject.getCTM().toDouble()));
+//            matrix = matrix.mtimes(ctm);
+//        }
+//
+//        ST_Box boundary = nImageObject.getBoundary();
+//        double x = boundary.getTopLeftX();
+//        double y = boundary.getTopLeftY();
+//        if (boundary == null) {
+//            boundary = pageBox;
+//        }
+//        if (compositeObjectCTM != null) {
+//            Matrix ctm = MatrixUtils.base();
+//            ctm = ctm.mtimes(MatrixUtils.ctm(compositeObjectCTM.toDouble()));
+//            matrix = matrix.mtimes(ctm);
+//            double[] realPos = PointUtil.ctmCalPoint(x, y, compositeObjectCTM.toDouble());
+//            x = realPos[0];
+//            y = realPos[1];
+//        }
+//
+//        matrix = matrix.mtimes(MatrixUtils.create(1, 0, 0, 1, x, y));
+//
+//        matrix = MatrixUtils.imageMatrix(matrix, 0, 1, 0);
+//        matrix = matrix.mtimes(MatrixUtils.create(1, 0, 0, 1, 0, pageBox.getHeight()));
+//
+//        matrix = matrix.mtimes(MatrixUtils.create(converterDpi(1), 0, 0, converterDpi(1), 0, 0));
+//        return matrix;
+//    }
 
     public static Matrix getImageMatrixFromOfd(ImageObject nImageObject, ST_Box pageBox) {
         Matrix matrix = MatrixUtils.base();
@@ -401,37 +399,37 @@ public class CommonUtil {
 //        return parser.parse(content.toByteArray());
 //    }
 
-    /**
-     * @deprecated see {@link org.ofdrw.converter.ColorConvert#pdfRGB(ResourceManage, CT_Color)}
-     * @param colorArray 颜色数组
-     * @return PDF颜色对象
-     */
-    @Deprecated
-    public static com.itextpdf.kernel.colors.Color convertOfdColor(ST_Array colorArray) {
-        com.itextpdf.kernel.colors.Color color = null;
-        String colorStr = colorArray.toString();
-        if (colorStr.indexOf("#") != -1) {
-            String[] rgbStr = colorStr.split(" ");
-            String r = rgbStr[0].replaceAll("#", "");
-            String g = rgbStr[1].replaceAll("#", "");
-            String b = rgbStr[2].replaceAll("#", "");
-            if (r.length() == 1) {
-                r += "0";
-            }
-            if (g.length() == 1) {
-                g += "0";
-            }
-            if (b.length() == 1) {
-                b += "0";
-            }
-            java.awt.Color jColor = java.awt.Color.decode(String.format("#%s%s%s", r, g, b));
-            color = new DeviceRgb(jColor.getRed() / 255f, jColor.getGreen() / 255f, jColor.getBlue() / 255f);
-        } else {
-            float[] colors = CommonUtil.doubleArrayToFloatArray(colorArray.toDouble());
-            if (colors.length == 3) {
-                color = new DeviceRgb(colors[0] / 255f, (int) colors[1] / 255f, (int) colors[2] / 255f);
-            }
-        }
-        return color;
-    }
+//    /**
+//     * @deprecated see {@link org.ofdrw.converter.ColorConvert#pdfRGB(ResourceManage, CT_Color)}
+//     * @param colorArray 颜色数组
+//     * @return PDF颜色对象
+//     */
+//    @Deprecated
+//    public static com.itextpdf.kernel.colors.Color convertOfdColor(ST_Array colorArray) {
+//        com.itextpdf.kernel.colors.Color color = null;
+//        String colorStr = colorArray.toString();
+//        if (colorStr.indexOf("#") != -1) {
+//            String[] rgbStr = colorStr.split(" ");
+//            String r = rgbStr[0].replaceAll("#", "");
+//            String g = rgbStr[1].replaceAll("#", "");
+//            String b = rgbStr[2].replaceAll("#", "");
+//            if (r.length() == 1) {
+//                r += "0";
+//            }
+//            if (g.length() == 1) {
+//                g += "0";
+//            }
+//            if (b.length() == 1) {
+//                b += "0";
+//            }
+//            java.awt.Color jColor = java.awt.Color.decode(String.format("#%s%s%s", r, g, b));
+//            color = new DeviceRgb(jColor.getRed() / 255f, jColor.getGreen() / 255f, jColor.getBlue() / 255f);
+//        } else {
+//            float[] colors = CommonUtil.doubleArrayToFloatArray(colorArray.toDouble());
+//            if (colors.length == 3) {
+//                color = new DeviceRgb(colors[0] / 255f, (int) colors[1] / 255f, (int) colors[2] / 255f);
+//            }
+//        }
+//        return color;
+//    }
 }

@@ -34,7 +34,7 @@ public class CertDigestObj extends ASN1Object {
 
     public CertDigestObj(ASN1Sequence seq) {
         Enumeration<?> e = seq.getObjects();
-        type = DERPrintableString.getInstance(e.nextElement());
+        type = new DERPrintableString(e.nextElement().toString());
         value = ASN1OctetString.getInstance(e.nextElement());
     }
 

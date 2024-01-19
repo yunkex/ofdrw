@@ -1,7 +1,5 @@
 package org.ofdrw.converter;
 
-import com.itextpdf.kernel.pdf.PdfDocument;
-import com.itextpdf.kernel.pdf.PdfWriter;
 import org.apache.pdfbox.pdmodel.PDDocument;
 import org.ofdrw.reader.OFDReader;
 import org.ofdrw.reader.PageInfo;
@@ -23,28 +21,28 @@ public class ConvertHelper {
 
     private final static Logger logger = LoggerFactory.getLogger(ConvertHelper.class);
 
-    /**
-     * 转换使用库名称
-     */
-    public static Lib lib = Lib.iText;
-
-    public static enum Lib {
-        iText, PDFBox
-    }
-
-    /**
-     * 使用iText作为转换实现
-     */
-    public static void useIText() {
-        lib = Lib.iText;
-    }
-
-    /**
-     * 使用PDFBox作为转换实现
-     */
-    public static void usePDFBox() {
-        lib = Lib.PDFBox;
-    }
+//    /**
+//     * 转换使用库名称
+//     */
+//    public static Lib lib = Lib.iText;
+//
+//    public static enum Lib {
+//        iText, PDFBox
+//    }
+//
+//    /**
+//     * 使用iText作为转换实现
+//     */
+//    public static void useIText() {
+//        lib = Lib.iText;
+//    }
+//
+//    /**
+//     * 使用PDFBox作为转换实现
+//     */
+//    public static void usePDFBox() {
+//        lib = Lib.PDFBox;
+//    }
 
     /**
      * OFD转换PDF
@@ -73,39 +71,17 @@ public class ConvertHelper {
             }
 
             ByteArrayOutputStream bos = new ByteArrayOutputStream();
-            switch (lib) {
-                case iText: {
-                    try (PdfWriter pdfWriter = new PdfWriter(bos);
-                         PdfDocument pdfDocument = new PdfDocument(pdfWriter)) {
-                        long start;
-                        long end;
-                        int pageNum = 1;
-                        ItextMaker pdfMaker = new ItextMaker(reader);
-                        // 循环添加Page
-                        for (PageInfo pageInfo : reader.getPageList()) {
-                            start = System.currentTimeMillis();
-                            pdfMaker.makePage(pdfDocument, pageInfo);
-                            end = System.currentTimeMillis();
-                            logger.debug(String.format("page %d speed time %d", pageNum++, end - start));
-                        }
-                        // 添加附件
-                        pdfMaker.addAttachments(pdfDocument, reader);
-                    }
-                    break;
+
+            try (PDDocument pdfDocument = new PDDocument()) {
+                PdfboxMaker pdfMaker = new PdfboxMaker(reader, pdfDocument);
+                long start = 0, end = 0, pageNum = 1;
+                for (PageInfo pageInfo : reader.getPageList()) {
+                    start = System.currentTimeMillis();
+                    pdfMaker.makePage(pageInfo);
+                    end = System.currentTimeMillis();
+                    logger.debug(String.format("page %d speed time %d", pageNum++, end - start));
                 }
-                case PDFBox: {
-                    try (PDDocument pdfDocument = new PDDocument()) {
-                        PdfboxMaker pdfMaker = new PdfboxMaker(reader, pdfDocument);
-                        long start = 0, end = 0, pageNum = 1;
-                        for (PageInfo pageInfo : reader.getPageList()) {
-                            start = System.currentTimeMillis();
-                            pdfMaker.makePage(pageInfo);
-                            end = System.currentTimeMillis();
-                            logger.debug(String.format("page %d speed time %d", pageNum++, end - start));
-                        }
-                        pdfDocument.save(bos);
-                    }
-                }
+                pdfDocument.save(bos);
             }
 
             if (output instanceof OutputStream) {

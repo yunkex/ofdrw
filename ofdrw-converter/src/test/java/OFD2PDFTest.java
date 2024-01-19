@@ -17,22 +17,16 @@ public class OFD2PDFTest {
 
     @Test
     public void convertPdf() {
-//        Path src = Paths.get("src/test/resources/1.ofd");
-//        Path dst = Paths.get("target/1.pdf");
-//        Path src = Paths.get("src/test/resources/zsbk.ofd");
-//        Path dst = Paths.get("target/zsbk.pdf");
 
-        FontLoader.DEBUG = true;
-        // 为不规范的字体名创建映射
-        FontLoader.getInstance()
-                .addAliasMapping("小标宋体", "方正小标宋简体")
-                .addSimilarFontReplaceRegexMapping(".*SimSun.*", "SimSun");
+
+//        FontLoader.DEBUG = true;
+//        // 为不规范的字体名创建映射
+//        FontLoader.getInstance()
+//                .addAliasMapping("小标宋体", "方正小标宋简体")
+//                .addSimilarFontReplaceRegexMapping(".*SimSun.*", "SimSun");
         long start = System.currentTimeMillis();
         try {
-//            ConvertHelper.toPdf(src, dst);
-            ConvertHelper.toPdf(Paths.get("src/test/resources/发票示例.ofd"), Paths.get("target/发票示例.pdf"));
-            ConvertHelper.toPdf(Paths.get("src/test/resources/zsbk.ofd"), Paths.get("target/zsbk.pdf"));
-            ConvertHelper.toPdf(Paths.get("src/test/resources/999.ofd"), Paths.get("target/999.pdf"));
+            ConvertHelper.toPdf(Paths.get("E:/TEST/1x21.ofd"), Paths.get("E:/TEST/1.pdf"));
             System.out.printf(">> 总计花费: %dms\n", System.currentTimeMillis() - start);
         } catch (GeneralConvertException e) {
             e.printStackTrace();

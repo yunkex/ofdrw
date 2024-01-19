@@ -61,11 +61,11 @@ public class SES_Signature extends ASN1Object {
         toSign = TBS_Sign.getInstance(e.nextElement());
         cert = ASN1OctetString.getInstance(e.nextElement());
         signatureAlgID = ASN1ObjectIdentifier.getInstance(e.nextElement());
-        signature = DERBitString.getInstance(e.nextElement());
+        signature = new DERBitString(e.nextElement().toString().getBytes());
         if (e.hasMoreElements()) {
             Object obj = e.nextElement();
             if (obj instanceof ASN1TaggedObject) {
-                timeStamp = DERBitString.getInstance(((ASN1TaggedObject) obj).getObject());
+                timeStamp = DERBitString.getInstance(((ASN1TaggedObject) obj).getBaseObject());
             }
         }
     }

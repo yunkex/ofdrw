@@ -7,6 +7,7 @@ import org.apache.pdfbox.pdmodel.common.filespecification.PDEmbeddedFile;
 import org.apache.pdfbox.pdmodel.font.PDFont;
 import org.apache.pdfbox.pdmodel.font.PDType0Font;
 import org.apache.pdfbox.pdmodel.font.PDType1Font;
+import org.apache.pdfbox.pdmodel.graphics.blend.BlendMode;
 import org.apache.pdfbox.pdmodel.graphics.color.PDColor;
 import org.apache.pdfbox.pdmodel.graphics.color.PDDeviceRGB;
 import org.apache.pdfbox.pdmodel.graphics.image.LosslessFactory;
@@ -518,6 +519,9 @@ public class PdfboxMaker {
             contentStream.clip();
             contentStream.stroke();
         }
+        PDExtendedGraphicsState r0 = new PDExtendedGraphicsState();
+        r0.setBlendMode(BlendMode.MULTIPLY);
+        contentStream.setGraphicsStateParameters(r0);
         contentStream.drawImage(pdfImageObject, (float) converterDpi(x), (float) converterDpi(y), (float) converterDpi(width), (float) converterDpi(height));
         contentStream.restoreGraphicsState();
     }
@@ -664,8 +668,8 @@ public class PdfboxMaker {
         }
         try {
             // 加载字体
-            InputStream in = FontLoader.getInstance().loadFontSimilarStream(reader.getResourceLocator(), ctFont);
-            PDFont font = PDType0Font.load(pdf, in, true);
+            org.apache.fontbox.ttf.TrueTypeFont ttf = FontLoader.getInstance().loadFontSimilarStream1(reader.getResourceLocator(), ctFont);
+            PDFont font = PDType0Font.load(pdf,ttf,true);
             fontCache.put(key, font);
             return font;
         } catch (Exception e) {

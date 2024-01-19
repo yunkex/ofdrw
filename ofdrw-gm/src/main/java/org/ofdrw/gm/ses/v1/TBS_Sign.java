@@ -97,7 +97,7 @@ public class TBS_Sign extends ASN1Object {
         }
 
 //        dataHash = DERBitString.getInstance(e.nextElement());
-        propertyInfo = DERIA5String.getInstance(e.nextElement());
+        propertyInfo = new DERIA5String(e.nextElement().toString());
         cert = ASN1OctetString.getInstance(e.nextElement());
         signatureAlgorithm = ASN1ObjectIdentifier.getInstance(e.nextElement());
     }

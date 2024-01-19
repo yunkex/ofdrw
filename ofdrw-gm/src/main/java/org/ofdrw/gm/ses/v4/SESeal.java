@@ -54,7 +54,7 @@ public class SESeal extends ASN1Object {
         eSealInfo = SES_SealInfo.getInstance(e.nextElement());
         cert = ASN1OctetString.getInstance(e.nextElement());
         signAlgID = ASN1ObjectIdentifier.getInstance(e.nextElement());
-        signedValue = DERBitString.getInstance(e.nextElement());
+        signedValue = new DERBitString(e.nextElement().toString().getBytes());
     }
 
 

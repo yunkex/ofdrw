@@ -1,6 +1,5 @@
 package org.ofdrw.converter;
 
-import com.itextpdf.kernel.colors.DeviceRgb;
 import org.ofdrw.converter.utils.CommonUtil;
 import org.ofdrw.core.basicType.ST_Array;
 import org.ofdrw.core.basicType.ST_RefID;
@@ -50,33 +49,33 @@ final public class ColorConvert {
      * @param colorArray 颜色数值
      * @return PDF颜色对象
      */
-    public static com.itextpdf.kernel.colors.Color convertOfdColor(ST_Array colorArray) {
-        com.itextpdf.kernel.colors.Color color = null;
-        String colorStr = colorArray.toString();
-        if (colorStr.indexOf("#") != -1) {
-            String[] rgbStr = colorStr.split(" ");
-            String r = rgbStr[0].replaceAll("#", "");
-            String g = rgbStr[1].replaceAll("#", "");
-            String b = rgbStr[2].replaceAll("#", "");
-            if (r.length() == 1) {
-                r += "0";
-            }
-            if (g.length() == 1) {
-                g += "0";
-            }
-            if (b.length() == 1) {
-                b += "0";
-            }
-            java.awt.Color jColor = java.awt.Color.decode(String.format("#%s%s%s", r, g, b));
-            color = new DeviceRgb(jColor.getRed() / 255f, jColor.getGreen() / 255f, jColor.getBlue() / 255f);
-        } else {
-            float[] colors = CommonUtil.doubleArrayToFloatArray(colorArray.toDouble());
-            if (colors.length == 3) {
-                color = new DeviceRgb(colors[0] / 255f, (int) colors[1] / 255f, (int) colors[2] / 255f);
-            }
-        }
-        return color;
-    }
+//    public static com.itextpdf.kernel.colors.Color convertOfdColor(ST_Array colorArray) {
+//        com.itextpdf.kernel.colors.Color color = null;
+//        String colorStr = colorArray.toString();
+//        if (colorStr.indexOf("#") != -1) {
+//            String[] rgbStr = colorStr.split(" ");
+//            String r = rgbStr[0].replaceAll("#", "");
+//            String g = rgbStr[1].replaceAll("#", "");
+//            String b = rgbStr[2].replaceAll("#", "");
+//            if (r.length() == 1) {
+//                r += "0";
+//            }
+//            if (g.length() == 1) {
+//                g += "0";
+//            }
+//            if (b.length() == 1) {
+//                b += "0";
+//            }
+//            java.awt.Color jColor = java.awt.Color.decode(String.format("#%s%s%s", r, g, b));
+//            color = new DeviceRgb(jColor.getRed() / 255f, jColor.getGreen() / 255f, jColor.getBlue() / 255f);
+//        } else {
+//            float[] colors = CommonUtil.doubleArrayToFloatArray(colorArray.toDouble());
+//            if (colors.length == 3) {
+//                color = new DeviceRgb(colors[0] / 255f, (int) colors[1] / 255f, (int) colors[2] / 255f);
+//            }
+//        }
+//        return color;
+//    }
 
     /**
      * PDF的RGB颜色
@@ -85,10 +84,10 @@ final public class ColorConvert {
      * @param ctColor 颜色
      * @return PDF RGB颜色
      */
-    public static com.itextpdf.kernel.colors.Color pdfRGB(ResourceManage resMgt, CT_Color ctColor) {
-        final int[] rgb = rgb(resMgt, ctColor);
-        return new DeviceRgb(rgb[0] / 255f, (int) rgb[1] / 255f, (int) rgb[2] / 255f);
-    }
+//    public static com.itextpdf.kernel.colors.Color pdfRGB(ResourceManage resMgt, CT_Color ctColor) {
+//        final int[] rgb = rgb(resMgt, ctColor);
+//        return new DeviceRgb(rgb[0] / 255f, (int) rgb[1] / 255f, (int) rgb[2] / 255f);
+//    }
 
     /**
      * 转换为RGB颜色
