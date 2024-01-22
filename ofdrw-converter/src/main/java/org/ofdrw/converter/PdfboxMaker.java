@@ -668,7 +668,7 @@ public class PdfboxMaker {
         }
         try {
             // 加载字体
-            org.apache.fontbox.ttf.TrueTypeFont ttf = FontLoader.getInstance().loadFontSimilarStream1(reader.getResourceLocator(), ctFont);
+            org.apache.fontbox.ttf.TrueTypeFont ttf = FontLoader.getInstance().loadFontSimilarTrueTypeFont(reader.getResourceLocator(), ctFont);
             PDFont font = PDType0Font.load(pdf,ttf,true);
             fontCache.put(key, font);
             return font;

@@ -1,5 +1,6 @@
 import org.junit.jupiter.api.Test;
 import org.ofdrw.converter.ConvertHelper;
+import org.ofdrw.converter.FontLoader;
 import org.ofdrw.converter.GeneralConvertException;
 import org.ofdrw.converter.export.OFDExporter;
 import org.ofdrw.converter.export.PDFExporterPDFBox;
@@ -22,6 +23,7 @@ public class OFD2PDFTest {
 //        FontLoader.getInstance()
 //                .addAliasMapping("小标宋体", "方正小标宋简体")
 //                .addSimilarFontReplaceRegexMapping(".*SimSun.*", "SimSun");
+        FontLoader.getCustomInstance().setCustomFontPath("E:\\TEST\\font");
         long start = System.currentTimeMillis();
         try {
             ConvertHelper.toPdf(Paths.get("E:/TEST/1x21.ofd"), Paths.get("E:/TEST/1.pdf"));

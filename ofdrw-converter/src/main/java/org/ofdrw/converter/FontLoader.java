@@ -47,6 +47,13 @@ public final class FontLoader {
      */
     private static Path DefaultFontPath;
     private static FontLoader instance = null;
+
+    /**
+     * 自定义字体目录
+     */
+    private final Map<String, String> fontNamePathMap = new ConcurrentHashMap<>();
+    private final Map<String, String> fontNameAliasPathMap = new ConcurrentHashMap<>();
+    private File[] fontList;
     /**
      * KEY: 字族名、字体名、PSName，如 SimSun、SitkaBanner-Bold
      * VALUE: 字体所在绝对路径
@@ -118,6 +125,18 @@ public final class FontLoader {
     public static FontLoader getInstance() {
         if (instance == null) {
             syncInit();
+        }
+        return instance;
+    }
+
+    /**
+     * 获取字体加载器实例
+     *
+     * @return 字体加载器
+     */
+    public static FontLoader getCustomInstance() {
+        if (instance == null) {
+            instance = new FontLoader();
         }
         return instance;
     }
@@ -438,6 +457,74 @@ public final class FontLoader {
         return null;
     }
 
+    public void setCustomFontPath(String fontPath) {
+
+        fontList = new File(fontPath).listFiles();
+
+        for (File f : fontList) {
+            Font f2 = null;
+            try {
+                f2 = Font.createFont(Font.TRUETYPE_FONT, f.getAbsoluteFile());
+            } catch (FontFormatException | IOException e) {
+                e.printStackTrace();
+            }
+            String fontName;
+            String fontNamePS;
+
+            if (f2 != null) {
+                fontName = f2.getName();
+                fontNamePS = f2.getPSName();
+                fontNamePathMap.put(fontName, f.getAbsolutePath());
+
+                if ((!fontName.equals(fontNamePS))) {
+                    fontNameAliasPathMap.put(fontNamePS, f.getAbsolutePath());
+                }
+            }
+        }
+
+    }
+
+
+    /**
+     * 从自定义字体目录下获取字体路径
+     *
+     * @param familyName 字族名（用于在字体不存在是替代字体，可为空）
+     * @param fontName   字体名
+     * @return 自定义字体目录绝对路径，如果不存在返还null
+     */
+    public String getCustomFontPath(@Nullable String familyName, String fontName) {
+        if (fontName == null && familyName == null) {
+            return null;
+        }
+
+        String fontPath = null;
+        if (fontName != null) {
+            fontPath = fontNamePathMap.get(fontName);
+        }
+        if (fontPath == null && familyName != null) {
+            // 通过字体名称找不到字体时，使用字族名替换字形名称查找
+            fontPath = fontNamePathMap.get(familyName);
+        }
+        // 如果字体路径找到，那么返回
+        if (fontPath != null) {
+            return fontPath;
+        }
+
+        // 没有找到式，检查别名中是否存在
+        String name = fontNameAliasPathMap.get(fontName);
+        if (name != null) {
+            return name;
+        }
+
+        if (familyName == null) return null;
+        name = fontNameAliasPathMap.get(familyName);
+        if (name != null) {
+            return name;
+        }
+
+        return null;
+    }
+
     /**
      * 获取配置的 相似字体 对应的字体路径
      *
@@ -449,8 +536,14 @@ public final class FontLoader {
         if (fontName == null && familyName == null) {
             return null;
         }
-        // 首先尝试使用名称直接查找
-        String fontPath = getSystemFontPath(familyName, fontName);
+        String fontPath = null;
+        // 首先尝试使用名称在自定义字体路径直接查找
+        fontPath = getCustomFontPath(familyName, fontName);
+
+        // 首先尝试使用名称在系统字体路径直接查找
+        if (fontPath == null) {
+            fontPath = getSystemFontPath(familyName, fontName);
+        }
         if (fontPath != null) {
             return fontPath;
         }
@@ -738,14 +831,14 @@ public final class FontLoader {
 //
 //    }
 
-    /**
-     * 加载字体
-     * <p>
-     * 如果无法加载则返回null
-     *
-     * @param fontAbsPath 字体路径
-     * @return 字体对象
-     */
+//    /**
+//     * 加载字体
+//     * <p>
+//     * 如果无法加载则返回null
+//     *
+//     * @param fontAbsPath 字体路径
+//     * @return 字体对象
+//     */
 //    private FontProgram getFontProgram(String fontAbsPath) {
 //        if (fontAbsPath == null) {
 //            return null;
@@ -773,7 +866,7 @@ public final class FontLoader {
 //        }
 //    }
 
-    public org.apache.fontbox.ttf.TrueTypeFont loadFontSimilarStream1(ResourceLocator rl, CT_Font ctFont) {
+    public org.apache.fontbox.ttf.TrueTypeFont loadFontSimilarTrueTypeFont(ResourceLocator rl, CT_Font ctFont) {
         org.apache.fontbox.ttf.TrueTypeFont ttf = null;
         try {
             if (ctFont != null) {
