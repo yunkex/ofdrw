@@ -101,6 +101,7 @@ public class ConvertHelper {
             } else {
                 throw new IllegalArgumentException("不支持的输出格式(output)，仅支持OutputStream、Path、File、String");
             }
+            bos.close();
         } catch (IllegalArgumentException e) {
             throw e;
         } catch (Exception e) {
